@@ -1,0 +1,79 @@
+! -*-f90-*-
+
+!***********************************************************************
+!*                   GNU Lesser General Public License
+!*
+!* This file is part of the GFDL Flexible Modeling System (FMS).
+!*
+!* FMS is free software: you can redistribute it and/or modify it under
+!* the terms of the GNU Lesser General Public License as published by
+!* the Free Software Foundation, either version 3 of the License, or (at
+!* your option) any later version.
+!*
+!* FMS is distributed in the hope that it will be useful, but WITHOUT
+!* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+!* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+!* for more details.
+!*
+!* You should have received a copy of the GNU Lesser General Public
+!* License along with FMS.  If not, see <http://www.gnu.org/licenses/>.
+!***********************************************************************
+!> @file
+!> @brief Imports wrapper methods for diag_manager to python for r4 (c_float) precision
+
+!> @addtogroup pyfms_diag_manager_mod
+!> @{
+
+#undef CFMS_KIND_
+#define CFMS_KIND_ c_float
+
+#undef CFMS_DIAG_AXIS_INIT_
+#define CFMS_DIAG_AXIS_INIT_ cFMS_diag_axis_init_c_float
+
+#undef CFMS_DIAG_GRID_INIT_
+#define CFMS_DIAG_GRID_INIT_ cFMS_diag_grid_init_c_float
+
+#undef CFMS_SEND_DATA_0D_
+#define CFMS_SEND_DATA_0D_ cFMS_send_data_0d_c_float
+
+#undef CFMS_SEND_DATA_1D_
+#define CFMS_SEND_DATA_1D_ cFMS_send_data_1d_c_float
+
+#undef CFMS_SEND_DATA_2D_
+#define CFMS_SEND_DATA_2D_ cFMS_send_data_2d_c_float
+
+#undef CFMS_SEND_DATA_3D_
+#define CFMS_SEND_DATA_3D_ cFMS_send_data_3d_c_float
+
+#undef CFMS_SEND_DATA_4D_
+#define CFMS_SEND_DATA_4D_ cFMS_send_data_4d_c_float
+
+#include "cFMS_diag_manager.inc"
+
+#undef CFMS_KIND_
+#define CFMS_KIND_ c_double
+
+#undef CFMS_DIAG_AXIS_INIT_
+#define CFMS_DIAG_AXIS_INIT_ cFMS_diag_axis_init_c_double
+
+#undef CFMS_DIAG_GRID_INIT_
+#define CFMS_DIAG_GRID_INIT_ cFMS_diag_grid_init_c_double
+
+#undef CFMS_SEND_DATA_0D_
+#define CFMS_SEND_DATA_0D_ cFMS_send_data_0d_c_double
+
+#undef CFMS_SEND_DATA_1D_
+#define CFMS_SEND_DATA_1D_ cFMS_send_data_1d_c_double
+
+#undef CFMS_SEND_DATA_2D_
+#define CFMS_SEND_DATA_2D_ cFMS_send_data_2d_c_double
+
+#undef CFMS_SEND_DATA_3D_
+#define CFMS_SEND_DATA_3D_ cFMS_send_data_3d_c_double
+
+#undef CFMS_SEND_DATA_4D_
+#define CFMS_SEND_DATA_4D_ cFMS_send_data_4d_c_double
+
+#include "cFMS_diag_manager.inc"
+!> @}
+! close documentation grouping

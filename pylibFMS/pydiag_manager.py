@@ -4,11 +4,7 @@ import dataclasses
 
 import libFMS
 import pyFMS_mpp
-from pyFMS_utils import(
-    
-)
-
-
+from pyFMS_utils import *
 
 
 def diag_axis_init(
@@ -16,139 +12,124 @@ def diag_axis_init(
     array_data: np.ndarray,
     units: str,
     cart_name: str,
+    out_var: int,
     lib: ct.CDLL,    
-) -> ct.c_int:
+):
     
-    name, name_t = fmstype.setarg_c(name)
-    dim = len(array_data.shape)
-    dim, dim_t = fmstype.setarg_i4(dim)
-    units, units_t = fmstype.setarg_c(units)
-    cart_name, cart_name_t = fmstype.setarg_c(cart_name)
+    name, name_t = set_Cchar(name)
+    dim, dim_t = set_sizevars(array_data)
+    units, units_t = set_Cchar(units)
+    cart_name, cart_name_t = set_Cchar(cart_name)
+    out_var, out_var_t = setscalar_Cint32(out_var)
 
     if (np.all(array_data.dtype) == ct.c_float):
-        array_data, array_data_t = fmstype.setarg_r4(array_data)
-        _pyFMS_diag_axis_init = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_diag_axis_init_c_float")
-        _pyFMS_diag_axis_init.argtypes = [ name_t, dim_t, array_data_t, units_t, cart_name_t ]
-        _pyFMS_diag_axis_init.restype = ct.c_int
-        return _pyFMS_diag_axis_init(name, dim, array_data, units, cart_name)
+        array_data, array_data_t = setarray_Cfloat(array_data)
+        _pyFMS_diag_axis_init = lib.cfms_diag_axis_init_c_float
+        _pyFMS_diag_axis_init.argtypes = [ name_t, *dim_t, array_data_t, units_t, cart_name_t, out_var_t ]
+        _pyFMS_diag_axis_init.restype = None
+        _pyFMS_diag_axis_init(name, dim, array_data, units, cart_name, out_var)
     elif (np.all(array_data.dtype) == ct.c_double):
-        array_data, array_data_t = fmstype.setarg_r8(array_data)
-        _pyFMS_diag_axis_init = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_diag_axis_init_c_double")
-        _pyFMS_diag_axis_init.argtypes = [ name_t, dim_t, array_data_t, units_t, cart_name_t ]
-        _pyFMS_diag_axis_init.restype = ct.c_int
-        return _pyFMS_diag_axis_init(name, dim, array_data, units, cart_name)
+        array_data, array_data_t = setarray_Cdouble(array_data)
+        _pyFMS_diag_axis_init = lib.cfms_diag_axis_init_c_double
+        _pyFMS_diag_axis_init.argtypes = [ name_t, *dim_t, array_data_t, units_t, cart_name_t, out_var_t ]
+        _pyFMS_diag_axis_init.restype = None
+        _pyFMS_diag_axis_init(name, dim, array_data, units, cart_name, out_var)
     else:
-        print("pyFMS_diag_manager::diag_axis_init array_data type unknown")
-
+        print("cFMS_diag_manager::diag_axis_init array_data type unknown")
 
 
 
 def send_data(
         diag_field_id: int,
         field,
+        out_var: bool
         lib: ct.CDLL,
-) -> ct.c_bool:
+):
     
-    diag_field_id, diag_field_id_t = fmstype.setarg_i4(diag_field_id)
+    diag_field_id, diag_field_id_t = setscalar_Cint32(diag_field_id)
+    out_var, out_var_t = setscalar_Cbool(out_var)
 
     if not hasattr(field, "__len__"):
         if (np.all(field.dtype) == ct.c_float):
-            field, field_t = fmstype.setarg_r4(field[0])
-            _pyFMS_send_data = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_send_data_0d_c_float")
-            _pyFMS_send_data.argtypes = [ diag_field_id_t, field_t ]
-            _pyFMS_send_data.restype = ct.c_bool
-            return _pyFMS_send_data(diag_field_id, field)
+            field, field_t = setscalar_Cfloat(field[0])
+            _pyFMS_send_data = lib.cFMS_send_data_0d_c_float
+            _pyFMS_send_data.argtypes = [ diag_field_id_t, field_t, out_var_t ]
+            _pyFMS_send_data.restype = None
+            _pyFMS_send_data(diag_field_id, field, out_var)
         elif (np.all(field.dtype) == ct.c_double):
-            field, field_t = fmstype.setarg_r8(field[0])
-            _pyFMS_send_data = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_send_data_0d_c_double")
-            _pyFMS_send_data.argtypes = [ diag_field_id_t, field_t ]
-            _pyFMS_send_data.restype = ct.c_bool
-            return _pyFMS_send_data(diag_field_id, field)
+            field, field_t = setscalar_Cdouble(field[0])
+            _pyFMS_send_data = lib.cFMS_send_data_0d_c_double
+            _pyFMS_send_data.argtypes = [ diag_field_id_t, field_t, out_var_t ]
+            _pyFMS_send_data.restype = None
+            _pyFMS_send_data(diag_field_id, field)
         else:
-            print("pyFMS_diag_manager::send_data_0d field data type unknown")
+            print("cFMS_diag_manager::send_data_0d field data type unknown")
     elif len(field.shape) == 1:
-        n = field.shape[0]
-        n, n_t = fmstype.setarg_i4(n)
+        n, n_t = set_sizevars(field, 1)
         if (np.all(field.dtype) == ct.c_float):
-            field, field_t = fmstype.setarg_r4(field)
-            _pyFMS_send_data = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_send_data_1d_c_float")
-            _pyFMS_send_data.argtypes = [ diag_field_id_t, n_t, field_t ]
-            _pyFMS_send_data.restype = ct.c_bool
-            return _pyFMS_send_data(diag_field_id, n, field)
+            field, field_t = setarray_Cfloat(field)
+            _pyFMS_send_data = lib.cFMS_send_data_1d_c_float
+            _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
+            _pyFMS_send_data.restype = None
+            _pyFMS_send_data(diag_field_id, *n, field, out_var)
         elif (np.all(field.dtype) == ct.c_double):
-            field, field_t = fmstype.setarg_r8(field)
-            _pyFMS_send_data = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_send_data_1d_c_double")
-            _pyFMS_send_data.argtypes = [ diag_field_id_t, n_t, field_t ]
-            _pyFMS_send_data.restype = ct.c_bool
-            return _pyFMS_send_data(diag_field_id, n, field)
+            field, field_t = setarray_Cdouble(field)
+            _pyFMS_send_data = lib.cFMS_send_data_1d_c_double
+            _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
+            _pyFMS_send_data.restype = None
+            _pyFMS_send_data(diag_field_id, *n, field, out_var)
         else:
-            print("pyFMS_diag_manager::send_data_1d field data type unknown")
+            print("cFMS_diag_manager::send_data_1d field data type unknown")
     elif len(field.shape) == 2:
-        n = field.shape[0]
-        m = field.shape[1]
-        n, n_t = fmstype.setarg_i4(n)
-        m, m_t = fmstype.setarg_i4(m)
+        n, n_t = set_sizevars(field, 2)
         if (np.all(field.dtype) == ct.c_float):
-            field, field_t = fmstype.setarg_r4(field)
-            _pyFMS_send_data = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_send_data_2d_c_float")
-            _pyFMS_send_data.argtypes = [ diag_field_id_t, n_t, m_t, field_t ]
-            _pyFMS_send_data.restype = ct.c_bool
-            return _pyFMS_send_data(diag_field_id, n, m, field)
+            field, field_t = setarray_Cfloat(field)
+            _pyFMS_send_data = lib.cFMS_send_data_2d_c_float
+            _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
+            _pyFMS_send_data.restype = None
+            _pyFMS_send_data(diag_field_id, *n, field, out_var)
         elif (np.all(field.dtype) == ct.c_double):
-            field, field_t = fmstype.setarg_r8(field)
-            _pyFMS_send_data = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_send_data_2d_c_double")
-            _pyFMS_send_data.argtypes = [ diag_field_id_t, n_t, m_t, field_t ]
-            _pyFMS_send_data.restype = ct.c_bool
-            return _pyFMS_send_data(diag_field_id, n, m, field)
+            field, field_t = setarray_Cdouble(field)
+            _pyFMS_send_data = lib.cFMS_send_data_2d_c_double
+            _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
+            _pyFMS_send_data.restype = None
+            _pyFMS_send_data(diag_field_id, *n, field, out_var)
         else:
-            print("pyFMS_diag_manager::send_data_2d field data type unknown")
+            print("cFMS_diag_manager::send_data_2d field data type unknown")
     elif len(field.shape) == 3:
-        n = field.shape[0]
-        m = field.shape[1]
-        l = field.shape[2]
-        n, n_t = fmstype.setarg_i4(n)
-        m, m_t = fmstype.setarg_i4(m)
-        l, l_t = fmstype.setarg_i4(l)
+        n, n_t = set_sizevars(field, 3)
         if (np.all(field.dtype) == ct.c_float):
-            field, field_t = fmstype.setarg_r4(field)
-            _pyFMS_send_data = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_send_data_3d_c_float")
-            _pyFMS_send_data.argtypes = [ diag_field_id_t, n_t, m_t, l_t, field_t ]
-            _pyFMS_send_data.restype = ct.c_bool
-            return _pyFMS_send_data(diag_field_id, n, m, l, field)
+            field, field_t = setarray_Cfloat(field)
+            _pyFMS_send_data = lib.cFMS_send_data_3d_c_float
+            _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
+            _pyFMS_send_data.restype = None
+            _pyFMS_send_data(diag_field_id, *n, field, out_var)
         elif (np.all(field.dtype) == ct.c_double):
-            field, field_t = fmstype.setarg_r8(field)
-            _pyFMS_send_data = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_send_data_3d_c_double")
-            _pyFMS_send_data.argtypes = [ diag_field_id_t, n_t, m_t, l_t, field_t ]
-            _pyFMS_send_data.restype = ct.c_bool
-            return _pyFMS_send_data(diag_field_id, n, m, l, field)
+            field, field_t = setarray_Cdouble(field)
+            _pyFMS_send_data = lib.cFMS_send_data_3d_c_double
+            _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
+            _pyFMS_send_data.restype = None
+            _pyFMS_send_data(diag_field_id, *n, field, out_var)
         else:
-            print("pyFMS_diag_manager::send_data_3d field data type unknown")
+            print("cFMS_diag_manager::send_data_3d field data type unknown")
     elif len(field.shape) == 4:
-        n = field.shape[0]
-        m = field.shape[1]
-        l = field.shape[2]
-        k = field.shape[3]
-        n, n_t = fmstype.setarg_i4(n)
-        m, m_t = fmstype.setarg_i4(m)
-        l, l_t = fmstype.setarg_i4(l)
-        k, k_t = fmstype.setarg_i4(k)
+        n, n_t = set_sizevars(field, 4)
         if (np.all(field.dtype) == ct.c_float):
-            field, field_t = fmstype.setarg_r4(field)
-            _pyFMS_send_data = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_send_data_4d_c_float")
-            _pyFMS_send_data.argtypes = [ diag_field_id_t, n_t, m_t, l_t, k_t, field_t ]
-            _pyFMS_send_data.restype = ct.c_bool
-            return _pyFMS_send_data(diag_field_id, n, m, l, k, field)
+            field, field_t = setarray_Cfloat(field)
+            _pyFMS_send_data = lib.cFMS_send_data_4d_c_float
+            _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
+            _pyFMS_send_data.restype = None
+            _pyFMS_send_data(diag_field_id, *n, field, out_var)
         elif (np.all(field.dtype) == ct.c_double):
-            field, field_t = fmstype.setarg_r8(field)
-            _pyFMS_send_data = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_send_data_4d_c_double")
-            _pyFMS_send_data.argtypes = [ diag_field_id_t, n_t, m_t, l_t, k_t, field_t ]
-            _pyFMS_send_data.restype = ct.c_bool
-            return _pyFMS_send_data(diag_field_id, n, m, l, k, field)
+            field, field_t = setarray_Cdouble(field)
+            _pyFMS_send_data = lib.cFMS_send_data_4d_c_double
+            _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
+            _pyFMS_send_data.restype = None
+            _pyFMS_send_data(diag_field_id, *n, field, out_var)
         else:
-            print("pyFMS_diag_manager::send_data_4d field data type unknown")
+            print("cFMS_diag_manager::send_data_4d field data type unknown")
     else:
-        print("pyFMS_diag_manager::send_data rank of field unknown")
-
+        print("cFMS_diag_manager::send_data rank of field unknown")
 
 
 
@@ -158,67 +139,55 @@ def diag_field_add_attribute(
         att_value,
         lib: ct.CDLL,
 ):
-    diag_field_id, diag_field_id_t = fmstype.setarg_i4(diag_field_id)
-    att_name, att_name_t = fmstype.setarg_c(att_name)
-    n, n_t = fmstype.setarg_i4(n)
+    diag_field_id, diag_field_id_t = setscalar_Cint32(diag_field_id)
+    att_name, att_name_t = set_Cchar(att_name)
 
-    if hasattr(att_value, "__len__"):
-        if np.all(att_value.dtype == ct.c_float):
-            att_value, att_value_t = fmstype.setarg_r4(att_value)
-            _pyFMS_diag_field_add_attribute = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_diag_field_add_attribute_scalar_c_float")
-            _pyFMS_diag_field_add_attribute.argtypes = [ diag_field_id_t, att_name_t, att_value_t]
-            _pyFMS_diag_field_add_attribute(diag_field_id, att_name, att_value)
-        elif np.all(att_value.dtype == ct.c_double):
-            att_value, att_value_t = fmstype.setarg_r4(att_value)
-            _pyFMS_diag_field_add_attribute = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_diag_field_add_attribute_scalar_c_double")
+    if not hasattr(att_value, "__len__"):
+        if (type(att_value) == ct.c_double):
+            att_value, att_value_t = setscalar_Cdouble(att_value)
+            _pyFMS_diag_field_add_attribute = lib.cFMS_diag_field_add_attribute_scalar
             _pyFMS_diag_field_add_attribute.argtypes = [ diag_field_id_t, att_name_t, att_value_t]
             _pyFMS_diag_field_add_attribute(diag_field_id, att_name, att_value)
         else:
-            print("pyFMS_diag_manager::diag_field_add_attribute_scalar att_value type unknown")
-    elif not hasattr(att_value, "__len__"):
-        n = att_value.shape[0]
-        n, n_t = fmstype.setarg_i4(n)
-        if np.all(att_value.dtype == ct.c_float):
-            att_value, att_value_t = fmstype.setarg_r4(att_value)
-            _pyFMS_diag_field_add_attribute = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_diag_field_add_attribute_array_c_float")
-            _pyFMS_diag_field_add_attribute.argtypes = [ diag_field_id_t, att_name_t, n_t, att_value_t]
-            _pyFMS_diag_field_add_attribute(diag_field_id, att_name, n, att_value)
-        elif np.all(att_value.dtype == ct.c_double):
-            att_value, att_value_t = fmstype.setarg_r4(att_value)
-            _pyFMS_diag_field_add_attribute = getattr(lib, "__pyFMS_diag_manager_mod_MOD_pyFMS_diag_field_add_attribute_array_c_double")
-            _pyFMS_diag_field_add_attribute.argtypes = [ diag_field_id_t, att_name_t, n_t, att_value_t]
-            _pyFMS_diag_field_add_attribute(diag_field_id, att_name, n, att_value)
+            print("cFMS_diag_manager::diag_field_add_attribute_scalar att_value type unknown")
+    elif hasattr(att_value, "__len__"):
+        n, n_t = set_sizevars(att_value, 1)
+        if np.all(att_value.dtype == ct.c_double):
+            att_value, att_value_t = setarray_Cdouble(att_value)
+            _pyFMS_diag_field_add_attribute = lib.cFMS_diag_field_add_attribute_array
+            _pyFMS_diag_field_add_attribute.argtypes = [ diag_field_id_t, att_name_t, *n_t, att_value_t]
+            _pyFMS_diag_field_add_attribute(diag_field_id, att_name, *n, att_value)
         else:
-            print("pyFMS_diag_manager::diag_field_add_attribute_array att_value type unknown")
+            print("cFMS_diag_manager::diag_field_add_attribute_array att_value type unknown")
     else:
-        print("pyFMS_diag_manager::diag_field_add_attribute_array att_value type unknown")
-
+        print("cFMS_diag_manager::diag_field_add_attribute_array att_value type unknown")
 
 
 
 def register_diag_field(
         module_name: str,
         field_name: str,
-        lib: ct.CDLL,
         axes: np.ndarray = None,
-) -> ct.c_int:
+        out_var: int,
+        lib: ct.CDLL,
+):
     
-    module_name, module_name_t = fmstype.setarg_c(module_name)
-    field_name, field_name_t = fmstype.setarg_c(field_name)
+    module_name, module_name_t = set_Cchar(module_name)
+    field_name, field_name_t = set_Cchar(field_name)
+    out_var, out_var_t = setscalar_Cint32(out_var)
 
     if axes:
-        n = axes.shape(0)
-        n, n_t = fmstype.setarg_i4(n)
-        axes, axes_t = fmstype.setarg_i4(axes)
-        _pyFMS_register_diag_field = getattr(lib, "__pyFMS_mod_MOD_pyFMS_diag_field")
-        _pyFMS_register_diag_field.argtypes = [ module_name_t, field_name_t, n_t, axes_t ]
-        _pyFMS_register_diag_field.restype = ct.c_int
-        return _pyFMS_register_diag_field(module_name, field_name, n, axes)
+        n, n_t = set_sizevars(axes, 1)
+        axes, axes_t = setarray_Cint32(axes)
+        _pyFMS_register_diag_field = lib.cFMS_register_diag_field_array
+        _pyFMS_register_diag_field.argtypes = [ module_name_t, field_name_t, *n_t, axes_t, out_var_t ]
+        _pyFMS_register_diag_field.restype = None
+        _pyFMS_register_diag_field(module_name, field_name, *n, axes, out_var)
     else:
-        _pyFMS_register_diag_field = getattr(lib, "__pyFMS_mod_MOD_pyFMS_diag_field")
-        _pyFMS_register_diag_field.argtypes = [ module_name_t, field_name_t ]
-        _pyFMS_register_diag_field.restype = ct.c_int
-        return _pyFMS_register_diag_field(module_name, field_name, n)
+        _pyFMS_register_diag_field = lib.cFMS_register_diag_field_scalar
+        _pyFMS_register_diag_field.argtypes = [ module_name_t, field_name_t, out_var_t ]
+        _pyFMS_register_diag_field.restype = None
+        _pyFMS_register_diag_field(module_name, field_name, out_var)
 
 
 
@@ -226,19 +195,20 @@ def register_diag_field(
 def register_static_field(
         module_name: str,
         field_name: str,
-        lib: ct.CDLL,
         axes: np.ndarray,
-) -> ct.c_int:
+        out_var: int,
+        lib: ct.CDLL,
+):
     
-    module_name, module_name_t = fmstype.setarg_c(module_name)
-    field_name, field_name_t = fmstype.setarg_c(field_name)
-    n = axes.shape(0)
-    n, n_t = fmstype.setarg_i4(n)
-    axes, axes_t = fmstype.setarg_i4(axes)
-    _pyFMS_register_diag_field = getattr(lib, "__pyFMS_mod_MOD_pyFMS_diag_field")
-    _pyFMS_register_diag_field.argtypes = [ module_name_t, field_name_t, n_t, axes_t ]
-    _pyFMS_register_diag_field.restype = ct.c_int
-    return _pyFMS_register_diag_field(module_name, field_name, n, axes)
+    module_name, module_name_t = set_Cchar(module_name)
+    field_name, field_name_t = set_Cchar(field_name)
+    n, n_t = set_sizevars(axes)
+    axes, axes_t = setarray_Cint32(axes)
+    out_var, out_var_t = setscalar_Cint32(out_var)
+    _pyFMS_register_diag_field = lib.cFMS_register_diag_static_field
+    _pyFMS_register_diag_field.argtypes = [ module_name_t, field_name_t, *n_t, axes_t, out_var_t ]
+    _pyFMS_register_diag_field.restype = None
+    _pyFMS_register_diag_field(module_name, field_name, *n, axes, out_var)
     
 
 
