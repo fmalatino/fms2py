@@ -70,7 +70,7 @@ subroutine CFMS_SEND_DATA_0D_(diag_field_id, field, out_var) bind(c)
   real(CFMS_KIND_), intent(in)  :: field
   logical, intent(out)          :: out_var
 
-  out_var = fms_send_data(diag_field_id, field)
+  out_var = fms_diag_send_data(diag_field_id, field)
 
 end subroutine CFMS_SEND_DATA_0D_
 
@@ -83,7 +83,7 @@ subroutine CFMS_SEND_DATA_1D_(diag_field_id, n, field, out_var) bind(c)
   real(CFMS_KIND_), intent(in)  :: field(n)
   logical, intent(out)          :: out_var
 
-  out_var = fms_send_data(diag_field_id, field)
+  out_var = fms_diag_send_data(diag_field_id, field)
 
 end subroutine CFMS_SEND_DATA_1D_
 
@@ -97,7 +97,7 @@ subroutine CFMS_SEND_DATA_2D_(diag_field_id, n, m, field, out_var) bind(c)
   real(CFMS_KIND_), intent(in)  :: field(n,m)
   logical, intent(out)          :: out_var
 
-  out_var = fms_send_data(diag_field_id, field)
+  out_var = fms_diag_send_data(diag_field_id, field)
 
 end subroutine CFMS_SEND_DATA_2D_
 
@@ -112,7 +112,7 @@ subroutine CFMS_SEND_DATA_3D_(diag_field_id, n, m, l, field, out_var) bind(c)
   real(CFMS_KIND_), intent(in)  :: field(n,m,l)
   logical, intent(out)          :: out_var
 
-  out_var = fms_send_data(diag_field_id, field)
+  out_var = fms_diag_send_data(diag_field_id, field)
 
 end subroutine CFMS_SEND_DATA_3D_
 
@@ -128,7 +128,7 @@ subroutine CFMS_SEND_DATA_4D_(diag_field_id, n, m, l, k, field, out_var) bind(c)
   real(CFMS_KIND_), intent(in)  :: field(n,m,l,k)
   logical, intent(out)          :: out_var
 
-  out_var = fms_send_data(diag_field_id, field)
+  out_var = fms_diag_send_data(diag_field_id, field)
 
 end subroutine CFMS_SEND_DATA_4D_
 

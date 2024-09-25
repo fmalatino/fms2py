@@ -1,17 +1,18 @@
-module pyFMS_diag_manager_mod
+module cFMS_diag_manager_mod
 
     use FMS, only : fms_diag_axis_init, fms_diag_field_add_attribute, fms_diag_grid_init,&
-        & fms_register_diag_field, fms_register_static_field, fms_send_data, fms_string_utils_c2f_string
+        & fms_diag_register_diag_field, fms_diag_register_static_field, fms_diag_send_data,& 
+        & fms_string_utils_c2f_string
     use iso_c_binding
 
     implicit none
 
-    public :: pyFMS_diag_axis_init
-    public :: pyFMS_diag_field_add_attribute
-    public :: pyFMS_diag_grid_init
-    public :: pyFMS_register_diag_field
-    public :: pyFMS_register_static_field
-    public :: pyFMS_send_data
+    public :: cFMS_diag_axis_init
+    public :: cFMS_diag_field_add_attribute
+    public :: cFMS_diag_grid_init
+    public :: cFMS_register_diag_field
+    public :: cFMS_register_static_field
+    public :: cFMS_send_data
 
     ! type(domain1D), public :: Domain1
     ! type(domain2D), public :: Domain2
@@ -95,7 +96,7 @@ module pyFMS_diag_manager_mod
       module_name = fms_string_utils_c2f_string(module_name_ptr)
       field_name = fms_string_utils_c2f_string(field_name_ptr)
     
-      out_var = fms_register_diag_field(module_name, field_name, axes)
+      out_var = fms_diag_register_diag_field(module_name, field_name, axes)
     
     end subroutine cFMS_register_diag_field_array
 
@@ -111,7 +112,7 @@ module pyFMS_diag_manager_mod
       module_name = fms_string_utils_c2f_string(module_name_ptr)
       field_name = fms_string_utils_c2f_string(field_name_ptr)
     
-      out_var = fms_register_diag_field(module_name, field_name)
+      out_var = fms_diag_register_diag_field(module_name, field_name)
     
     end subroutine cFMS_register_diag_field_scalar
 
@@ -129,10 +130,10 @@ module pyFMS_diag_manager_mod
       module_name = fms_string_utils_c2f_string(module_name_ptr)
       field_name = fms_string_utils_c2f_string(field_name_ptr)
 
-      out_var = fms_register_static_field(module_name, field_name, axes)
+      out_var = fms_diag_register_static_field(module_name, field_name, axes)
 
     end subroutine cFMS_register_static_field
 
 #include "include/cFMS_diag_manager.fh"
 
-end module pyFMS_diag_manager_mod
+end module cFMS_diag_manager_mod

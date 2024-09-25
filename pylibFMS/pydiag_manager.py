@@ -52,13 +52,13 @@ def send_data(
     if not hasattr(field, "__len__"):
         if (np.all(field.dtype) == ct.c_float):
             field, field_t = setscalar_Cfloat(field[0])
-            _pyFMS_send_data = lib.cFMS_send_data_0d_c_float
+            _pyFMS_send_data = lib.cfms_send_data_0d_c_float
             _pyFMS_send_data.argtypes = [ diag_field_id_t, field_t, out_var_t ]
             _pyFMS_send_data.restype = None
             _pyFMS_send_data(diag_field_id, field, out_var)
         elif (np.all(field.dtype) == ct.c_double):
             field, field_t = setscalar_Cdouble(field[0])
-            _pyFMS_send_data = lib.cFMS_send_data_0d_c_double
+            _pyFMS_send_data = lib.cfms_send_data_0d_c_double
             _pyFMS_send_data.argtypes = [ diag_field_id_t, field_t, out_var_t ]
             _pyFMS_send_data.restype = None
             _pyFMS_send_data(diag_field_id, field)
@@ -68,13 +68,13 @@ def send_data(
         n, n_t = set_sizevars(field, 1)
         if (np.all(field.dtype) == ct.c_float):
             field, field_t = setarray_Cfloat(field)
-            _pyFMS_send_data = lib.cFMS_send_data_1d_c_float
+            _pyFMS_send_data = lib.cfms_send_data_1d_c_float
             _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
             _pyFMS_send_data.restype = None
             _pyFMS_send_data(diag_field_id, *n, field, out_var)
         elif (np.all(field.dtype) == ct.c_double):
             field, field_t = setarray_Cdouble(field)
-            _pyFMS_send_data = lib.cFMS_send_data_1d_c_double
+            _pyFMS_send_data = lib.cfms_send_data_1d_c_double
             _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
             _pyFMS_send_data.restype = None
             _pyFMS_send_data(diag_field_id, *n, field, out_var)
@@ -84,13 +84,13 @@ def send_data(
         n, n_t = set_sizevars(field, 2)
         if (np.all(field.dtype) == ct.c_float):
             field, field_t = setarray_Cfloat(field)
-            _pyFMS_send_data = lib.cFMS_send_data_2d_c_float
+            _pyFMS_send_data = lib.cfms_send_data_2d_c_float
             _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
             _pyFMS_send_data.restype = None
             _pyFMS_send_data(diag_field_id, *n, field, out_var)
         elif (np.all(field.dtype) == ct.c_double):
             field, field_t = setarray_Cdouble(field)
-            _pyFMS_send_data = lib.cFMS_send_data_2d_c_double
+            _pyFMS_send_data = lib.cfms_send_data_2d_c_double
             _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
             _pyFMS_send_data.restype = None
             _pyFMS_send_data(diag_field_id, *n, field, out_var)
@@ -100,13 +100,13 @@ def send_data(
         n, n_t = set_sizevars(field, 3)
         if (np.all(field.dtype) == ct.c_float):
             field, field_t = setarray_Cfloat(field)
-            _pyFMS_send_data = lib.cFMS_send_data_3d_c_float
+            _pyFMS_send_data = lib.cfms_send_data_3d_c_float
             _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
             _pyFMS_send_data.restype = None
             _pyFMS_send_data(diag_field_id, *n, field, out_var)
         elif (np.all(field.dtype) == ct.c_double):
             field, field_t = setarray_Cdouble(field)
-            _pyFMS_send_data = lib.cFMS_send_data_3d_c_double
+            _pyFMS_send_data = lib.cfms_send_data_3d_c_double
             _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
             _pyFMS_send_data.restype = None
             _pyFMS_send_data(diag_field_id, *n, field, out_var)
@@ -116,13 +116,13 @@ def send_data(
         n, n_t = set_sizevars(field, 4)
         if (np.all(field.dtype) == ct.c_float):
             field, field_t = setarray_Cfloat(field)
-            _pyFMS_send_data = lib.cFMS_send_data_4d_c_float
+            _pyFMS_send_data = lib.cfms_send_data_4d_c_float
             _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
             _pyFMS_send_data.restype = None
             _pyFMS_send_data(diag_field_id, *n, field, out_var)
         elif (np.all(field.dtype) == ct.c_double):
             field, field_t = setarray_Cdouble(field)
-            _pyFMS_send_data = lib.cFMS_send_data_4d_c_double
+            _pyFMS_send_data = lib.cfms_send_data_4d_c_double
             _pyFMS_send_data.argtypes = [ diag_field_id_t, *n_t, field_t, out_var_t ]
             _pyFMS_send_data.restype = None
             _pyFMS_send_data(diag_field_id, *n, field, out_var)
@@ -145,7 +145,7 @@ def diag_field_add_attribute(
     if not hasattr(att_value, "__len__"):
         if (type(att_value) == ct.c_double):
             att_value, att_value_t = setscalar_Cdouble(att_value)
-            _pyFMS_diag_field_add_attribute = lib.cFMS_diag_field_add_attribute_scalar
+            _pyFMS_diag_field_add_attribute = lib.cfms_diag_field_add_attribute_scalar
             _pyFMS_diag_field_add_attribute.argtypes = [ diag_field_id_t, att_name_t, att_value_t]
             _pyFMS_diag_field_add_attribute(diag_field_id, att_name, att_value)
         else:
@@ -154,7 +154,7 @@ def diag_field_add_attribute(
         n, n_t = set_sizevars(att_value, 1)
         if np.all(att_value.dtype == ct.c_double):
             att_value, att_value_t = setarray_Cdouble(att_value)
-            _pyFMS_diag_field_add_attribute = lib.cFMS_diag_field_add_attribute_array
+            _pyFMS_diag_field_add_attribute = lib.cfms_diag_field_add_attribute_array
             _pyFMS_diag_field_add_attribute.argtypes = [ diag_field_id_t, att_name_t, *n_t, att_value_t]
             _pyFMS_diag_field_add_attribute(diag_field_id, att_name, *n, att_value)
         else:
@@ -179,12 +179,12 @@ def register_diag_field(
     if axes:
         n, n_t = set_sizevars(axes, 1)
         axes, axes_t = setarray_Cint32(axes)
-        _pyFMS_register_diag_field = lib.cFMS_register_diag_field_array
+        _pyFMS_register_diag_field = lib.cfms_register_diag_field_array
         _pyFMS_register_diag_field.argtypes = [ module_name_t, field_name_t, *n_t, axes_t, out_var_t ]
         _pyFMS_register_diag_field.restype = None
         _pyFMS_register_diag_field(module_name, field_name, *n, axes, out_var)
     else:
-        _pyFMS_register_diag_field = lib.cFMS_register_diag_field_scalar
+        _pyFMS_register_diag_field = lib.cfms_register_diag_field_scalar
         _pyFMS_register_diag_field.argtypes = [ module_name_t, field_name_t, out_var_t ]
         _pyFMS_register_diag_field.restype = None
         _pyFMS_register_diag_field(module_name, field_name, out_var)
@@ -205,7 +205,7 @@ def register_static_field(
     n, n_t = set_sizevars(axes)
     axes, axes_t = setarray_Cint32(axes)
     out_var, out_var_t = setscalar_Cint32(out_var)
-    _pyFMS_register_diag_field = lib.cFMS_register_diag_static_field
+    _pyFMS_register_diag_field = lib.cfms_register_diag_static_field
     _pyFMS_register_diag_field.argtypes = [ module_name_t, field_name_t, *n_t, axes_t, out_var_t ]
     _pyFMS_register_diag_field.restype = None
     _pyFMS_register_diag_field(module_name, field_name, *n, axes, out_var)
