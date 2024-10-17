@@ -1,6 +1,6 @@
 import ctypes as ct
 import numpy as np
-import dataclasses
+from typing import Optional
 
 import libFMS
 import pyFMS_mpp
@@ -42,7 +42,7 @@ def diag_axis_init(
 def send_data(
         diag_field_id: int,
         field,
-        out_var: bool
+        out_var: bool,
         lib: ct.CDLL,
 ):
     
@@ -167,9 +167,9 @@ def diag_field_add_attribute(
 def register_diag_field(
         module_name: str,
         field_name: str,
-        axes: np.ndarray = None,
         out_var: int,
         lib: ct.CDLL,
+        axes: Optional[np.ndarray] = None,
 ):
     
     module_name, module_name_t = set_Cchar(module_name)
